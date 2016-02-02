@@ -1,0 +1,69 @@
+<project name="Ittavi Salesforce Ant tasks" default="validateDeploy" basedir="." xmlns:sf="antlib:com.salesforce">
+
+    <property file="build.properties"/>
+    <property environment="env"/>
+
+    <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
+        <classpath>
+            <pathelement location="ant-salesforce.jar" />        	
+        </classpath>
+    </taskdef>
+	
+    <!-- Validate deploy -->
+    <target name="validateDeploy">
+      <echo message="Validating deploy"/>
+
+      <sf:deploy username="${sf.username}"
+                 password="${sf.password}"
+                 serverurl="${sf.serverurl}"
+                 maxPoll="${sf.maxPoll}"
+                 deployRoot="${deploy.dir}"
+                 checkOnly="true">
+      </sf:deploy>
+    </target>
+
+    <!-- Deploy unpacked metadata from specified src directory and run local tests -->
+    <target name="deployWithTestsRun">
+      <echo message="Deploying ${deploy.dir} as ${sf.username}, running all tests" />
+
+      <sf:deploy username="${sf.username}"
+                 password="${sf.password}"
+                 serverurl="${sf.serverurl}"
+                 maxPoll="${sf.maxPoll}"
+                 deployRoot="${deploy.dir}"
+                 testLevel="RunLocalTests"
+                 logType="Debugonly"
+                 rollbackOnError="true">
+      </sf:deploy>
+    </target>
+
+     <!-- Deploy unpacked metadata from specified src directory without tests execution -->
+    <target name="deployIgnoreTests">
+      <echo message="Deploying ${deploy.dir} as ${sf.username}, ignore all tests" />
+
+      <sf:deploy username="${sf.username}"
+                 password="${sf.password}"
+                 serverurl="${sf.serverurl}"
+                 maxPoll="${sf.maxPoll}"
+                 deployRoot="${deploy.dir}"
+                 testLevel="NoTestRun"
+                 logType="Debugonly"
+                 rollbackOnError="true">
+      </sf:deploy>
+    </target>
+
+    <!-- Remove/Undeploy metadata specified in a destructiveChanges file. -->
+    <target name="undeploy">
+      <echo message="Undeploying items listed in ${undeploy.dir}/destructiveChanges.xml as ${sf.username}" />
+
+      <sf:deploy username="${sf.username}"
+                 password="${sf.password}"
+                 serverurl="${sf.serverurl}"
+                 maxPoll="${sf.maxPoll}"
+                 deployRoot="${undeploy.dir}"
+                 rollbackOnError="true">
+      </sf:deploy>
+    </target>
+
+
+</project>
